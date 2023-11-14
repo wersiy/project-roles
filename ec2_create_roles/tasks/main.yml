@@ -1,0 +1,42 @@
+---
+# Main file for ec2_create_role 
+  - name: Create EC2
+    ec2_instance:
+      region: "{{ region }}"
+      key_name: "{{ lookup('aws_ssm', '/JJTech/{{ team }}/keyname', region='us-east-2') }}"
+      security_group: "{{ lookup('aws_ssm', '/JJTech/{{ team }}/{{ security_group }}', region='us-east-2') }}"
+      image_id: "{{ lookup('aws_ssm', '/JJTech/{{ team }}/{{ ami_type }}', region='us-east-2') }}"
+      instance_type: "{{ instance_type }}"
+      vpc_subnet_id: "{{ lookup('aws_ssm', '/JJTech/{{ team }}/{{ vpc_subnet_id }}', region='us-east-2') }}"  
+      instance_role: "{{ lookup('aws_ssm', '/JJTech/{{ team }}/{{ instance_role }}', region='us-east-2') }}"  
+      network:
+        assign_public_ip: true
+      wait: true
+      volumes:
+        - device_name: /dev/xvda
+          ebs:
+            volume_type: gp2
+            volume_size: "{{ root_volume_size }}"
+            delete_on_termination: true
+            encrypted: true
+      name: "{{ instance_name }}"
+      tags:
+        created_by: "{{ created_by }}"
+        Owner: "{{ Owner }}"
+        App_Name: "{{ App_Name }}"
+        Cost_Center: "{{ Cost_Center }}"
+        Business_Unit: "{{ Business_Unit }}"
+      user_data: |
+        #!/bin/bash
+        sudo su
+        yum update -y
+        yum install httpd -y
+        service httpd start
+        chkconfig httpd on
+        yum install wget
+        wget https://github.com/awanmbandi/aws-real-world-projects/raw/web-appplications-src-code/medlife-health-care.zip -P ~/
+        yum install unzip -y
+        unzip ~/medlife-health-care.zip
+        rm -f /var/www/html/index.html
+        cp -rf medlife-master/* /var/www/html/
+

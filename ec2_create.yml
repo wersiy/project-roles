@@ -1,0 +1,8 @@
+---
+- hosts: all
+  #connection: local
+  gather_facts: False
+  become: true
+
+  roles:
+    - ec2_create_roles

@@ -1,0 +1,11 @@
+---
+# vars file for ec2_create_role
+region: us-east-2
+instance_type: t2.micro
+root_volume_size: 20
+instance_name: webserver
+created_by: papi
+Owner: ngtech
+App_Name: apache
+Cost_Center: 100
+Business_Unit: Oil&gaz
