@@ -1,7 +1,4 @@
 ---
 # handlers file for papi.role1
-  - name: restart httpd web service
-    service:
-        name: httpd
-        state: restarted
+
 
