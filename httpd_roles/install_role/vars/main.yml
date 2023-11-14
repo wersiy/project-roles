@@ -1,0 +1,4 @@
+---
+# vars file for papi.role1
+papi: httpd
+

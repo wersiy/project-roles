@@ -1,0 +1,17 @@
+---
+# tasks file for uninstall_role
+- name: uninstall the httpd service using yum package manager
+  yum:
+        name: httpd
+        state: absent
+- name: coppy the uninstall script to our target nodes
+  copy:
+        src: ../files/script_uninstall.sh
+        dest: /tmp/httpd
+        mode: '777'
+- name: run script to delete all dependency files
+  shell:
+        cmd: ./script_uninstall.sh >> logs_httpd.txt
+  args:
+        chdir: /tmp/httpd
+

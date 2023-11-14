@@ -1,0 +1,6 @@
+---
+- hosts: all
+#  connection: local
+  become: true
+  roles:
+        - httpd_roles/install_role

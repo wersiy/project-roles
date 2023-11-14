@@ -1,0 +1,41 @@
+---
+# tasks file for papi. role1 to install httpd
+  - name: run system update
+    yum:
+        state: latest
+  - name: install httpd web server
+    yum:
+        name: httpd
+        state: present
+  - name: start the httpd service
+    service:
+        name: httpd
+        state: started
+  - name: create directory called httpd 
+    file:
+        path: "{{ papi }}"
+        state: directory
+        mode: '0755'
+    loop:
+        - /home/ec2-user/httpd
+        - /tmp/httpd
+  - name: download template html files
+    get_url:
+        url: https://github.com/awanmbandi/aws-real-world-projects/raw/web-appplications-src-code/medlife-health-care.zip
+        dest: /home/ec2-user/httpd
+  - name: unzip the download zip file
+    unarchive:
+        src: /home/ec2-user/httpd/medlife-health-care.zip
+        dest: /home/ec2-user/httpd
+        remote_src: true
+  - name: copy a shell script to the target server
+    copy:
+        src: ../files/script_install.sh
+        dest: /tmp/httpd
+        mode: '777'
+  - name: Run the shell script to replace the existing html files with the downloaded template website html files
+    shell:
+        cmd: ./script_install.sh >> logs_httpd.txt
+    args:
+        chdir: /tmp/httpd
+    notify: restart httpd web service
